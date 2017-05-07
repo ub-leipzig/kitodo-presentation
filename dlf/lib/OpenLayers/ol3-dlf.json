@@ -6,6 +6,7 @@
     "ol.Collection#getArray",
     "ol.control.Control",
     "ol.control.Control#changed",
+    "ol.control.FullScreen",
     "ol.control.Zoom",
     "ol.control.MousePosition",
     "ol.control.OverviewMap",
