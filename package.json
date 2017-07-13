@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "*",
+    "gulp": "*",
+    "gulp-babel": "*",
+    "gulp-sourcemaps": "*",
+    "source-map-support": "*"
+  },
+  "scripts": {
+    "gulp": "gulp"
+  }
+}

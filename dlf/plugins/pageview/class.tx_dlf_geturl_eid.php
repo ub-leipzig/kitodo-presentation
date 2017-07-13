@@ -10,6 +10,7 @@
  */
 
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+include ("ChromePhp.php");
 
 /**
  * eID-script helper to fetch data from Javascript via server
@@ -79,6 +80,7 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 		}
 
 		echo $fetchedData;
+        ChromePhp::log($fetchedData);
 
 	}
 
