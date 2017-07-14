@@ -15,6 +15,7 @@
  *
  * @const
  */
+
 var dlfUtils = dlfUtils || {};
 
 /**
@@ -68,6 +69,8 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
 
+            var format;
+            var quality;
             tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0 ? imageSourceObj.tilesize[0] : 256, format = $.inArray('jpg', imageSourceObj.formats) || $.inArray('jpeg', imageSourceObj.formats) ? 'jpg' : imageSourceObj.formats.length > 0 ? imageSourceObj.formats[0] : 'jpg', quality = imageSourceObj.qualities !== undefined && imageSourceObj.qualities.length > 0 ? imageSourceObj.qualities[0] : 'native';
 
             layer = new ol.layer.Tile({
@@ -342,7 +345,8 @@ dlfUtils.supportsIIIF = function supportsIIIF(data) {
  * @param jsonld.height
  * @param jsonld.profile
  * @param jsonld.scaleFactors
- * @returns {{src: *, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *, mimetype: *}}
+ * @returns {{src: *, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *,
+ *     mimetype: *}}
  */
 dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
 
@@ -384,7 +388,8 @@ dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
  * @param jsonld.tile_height
  * @param jsonld.qualities
  * @param jsonld.formats
- * @returns {{src: *, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *, mimetype: *}}
+ * @returns {{src: *, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *,
+ *     mimetype: *}}
  */
 dlfUtils.buildImageV1 = function buildImageV1(mimetype, uri, jsonld) {
 
@@ -634,41 +639,20 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
         offset = opt_offset !== undefined ? opt_offset : 0;
 
     // do rescaling and set a id
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+    for (var i in features) {
 
-    try {
-        for (var _iterator = features[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var i = _step.value;
+        var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
+            newCoordinates = [];
 
-
-            var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
-                newCoordinates = [];
-
-            for (var j = 0; j < oldCoordinates.length; j++) {
-                newCoordinates.push([offset + scale * oldCoordinates[j][0], displayImageHeight - scale * oldCoordinates[j][1]]);
-            }
-
-            features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
-
-            // set index
-            dlfUtils.RUNNING_INDEX += 1;
-            features[i].setId('' + dlfUtils.RUNNING_INDEX);
+        for (var j = 0; j < oldCoordinates.length; j++) {
+            newCoordinates.push([offset + scale * oldCoordinates[j][0], displayImageHeight - scale * oldCoordinates[j][1]]);
         }
-    } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-            }
-        } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
-            }
-        }
+
+        features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
+
+        // set index
+        dlfUtils.RUNNING_INDEX += 1;
+        features[i].setId('' + dlfUtils.RUNNING_INDEX);
     }
 
     return features;
